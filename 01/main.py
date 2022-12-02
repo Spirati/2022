@@ -9,4 +9,4 @@ print("Part 1:",
     max(map(sum, lines)))
 
 print("Part 2:", 
-    sum(sorted(list(map(sum, lines))[-3:])))
+    sum(sorted(list(map(sum, lines))[-3:]))) 
