@@ -1,7 +1,7 @@
 from typing import List, Union, Optional, Any
 import json
 
-PROD = True
+PROD = False
 
 with open("input" if PROD else "sample") as f:
     lines = [g.strip() for g in f.readlines()]
@@ -41,17 +41,21 @@ cd = root
 listing = []
 consuming = False
 
+def consume_listing():
+    for entry in listing:
+        size, name = entry
+        if size == "dir":
+            cd.files.append(Directory(name, cd))
+        else:
+            cd.files.append(File(int(size), name))
+
+
 for line in lines:
     args = line.split(" ")
     if consuming:
         if args[0] == "$":
             consuming = False
-            for entry in listing:
-                size, name = entry
-                if size == "dir":
-                    cd.files.append(Directory(name, cd))
-                else:
-                    cd.files.append(File(int(size), name))
+            consume_listing()
             listing = []
         else:
             listing.append(args)
@@ -65,13 +69,7 @@ for line in lines:
                 cd = cd.cd(args[2])
         elif args[1] == "ls":
             consuming = True
-
-for entry in listing:
-    size, name = entry
-    if size == "dir":
-        cd.files.append(Directory(name, cd))
-    else:
-        cd.files.append(File(int(size), name))
+consume_listing()
 
 dir_sizes = []
 def log_size(d):
@@ -81,11 +79,10 @@ def log_size(d):
 
 def get_directories(directory: Directory):
     files = {
-        "FILES": {file.name: str(file) for file in directory.realfiles()},
         "SIZE": log_size(directory),
         **{sub.name: get_directories(sub) for sub in directory.directories()}
     }
-    return {**files, **{}}
+    return files
 
 tree = get_directories(trueroot)
 
