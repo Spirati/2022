@@ -1,42 +1,67 @@
-PROD = False
+from __future__ import annotations
+from typing import Optional
 
-dirs = {
-    "R":(1,0),
-    "U":(0,-1),
-    "D":(0,1),
-    "L":(-1,0)
+sign = lambda x: 1 if x >= 0 else -1
+
+class Knot:
+    x: int
+    y: int
+    parent: Optional[Knot]
+    child: Optional[Knot]
+
+    def __init__(self, parent: Optional[Knot] = None):
+        self.parent = parent
+        if parent:
+            self.parent.child = self
+        self.child = None
+        self.x = 0
+        self.y = 0
+    def step(self, dx = 0, dy = 0):
+
+        if self.parent:
+            if abs(self.parent.x-self.x) == 2 and abs(self.parent.y-self.y) == 0:
+                self.x+=sign(self.parent.x-self.x)
+            elif abs(self.parent.y-self.y) == 2 and abs(self.parent.x-self.x) == 0:
+                self.y+=sign(self.parent.y-self.y)
+            elif abs(self.parent.x-self.x)+abs(self.parent.y-self.y) > 2:
+                self.x+=sign(self.parent.x-self.x)
+                self.y+=sign(self.parent.y-self.y)
+        else:
+            self.x += dx
+            self.y += dy
+
+        if self.child:
+            self.child.step()
+
+
+PROD = True
+
+directions = {
+    "R": (1,0),
+    "U": (0,1),
+    "D": (0,-1),
+    "L": (-1,0)
 }
-
-tupsum = lambda *tuples: tuple(sum(t[c] for t in tuples) for c in range(len(tuples[0])))
 
 with open("input" if PROD else "sample") as f:
     lines = [g.strip().split(" ") for g in f.readlines()]
-    _steps = [(dirs[d],int(c)) for d,c in lines]
 
-steps = []
-[steps.extend([d]*c) for d,c in _steps]
+instructions = []
+[instructions.extend([directions[d]]*int(n)) for d,n in lines]
 
-positions = set()
-head = (0,0)
-phead = [0,0]
-tail = (0,0)
+knots = [Knot()]
+for _ in range(9):
+    knots.append(Knot(knots[-1]))
 
-tlog = [(0,0)]
-hlog = [(0,0)]
+positions_knotone = set()
+positions_tail = set()
 
-last_steps = ((0,0),(0,0))
 
-for i,step in enumerate(steps[2:]):
-    if abs(tail[0]-head[0])+abs(tail[1]-head[1]) > 2:
-        last_steps = (last_steps[1], steps[i])
-        tail = tupsum(*last_steps, tail)
-    else:
-        last_steps = (last_steps[1], (0,0))
-    head = tupsum(head, step)
-    positions.add(tail)
-    hlog.append(head)
-    tlog.append(tail)
+for (dx,dy) in instructions:
+    knots[0].step(dx,dy)
 
-print(hlog)
-print(tlog)
-print(len(positions))
+    positions_knotone.add((knots[1].x,knots[1].y))
+    positions_tail.add((knots[-1].x,knots[-1].y))
+
+print("Part 1:",len(positions_knotone))
+print("Part 2:",len(positions_tail))

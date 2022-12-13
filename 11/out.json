@@ -1,0 +1,45 @@
+{
+  "items": [
+    [
+      35,
+      30,
+      31,
+      28,
+      34,
+      35
+    ],
+    [
+      22,
+      24,
+      28,
+      29
+    ],
+    [],
+    []
+  ],
+  "operations": [
+    "lambda old: old * 19",
+    "lambda old: old + 6",
+    "lambda old: old * old",
+    "lambda old: old + 3"
+  ],
+  "tests": [
+    "lambda val: 2 if not val else 3",
+    "lambda val: 2 if not val else 0",
+    "lambda val: 1 if not val else 3",
+    "lambda val: 0 if not val else 1"
+  ],
+  "mods": [
+    "lambda val: val % 23",
+    "lambda val: val % 19",
+    "lambda val: val % 13",
+    "lambda val: val % 17"
+  ],
+  "inspections": [
+    96,
+    100,
+    3,
+    100
+  ],
+  "total": 0
+}
