@@ -12,6 +12,7 @@ def bubblesort(l, c):
             return
 
 def compare(left, right):
+    print(left,"vs",right)
     if isinstance(left, int):
         if isinstance(right, int):
             if left < right:
@@ -36,11 +37,15 @@ def compare(left, right):
                 return False
             return None
 
-PROD = True
+PROD = False
 
-with open("input" if PROD else "sample") as f:
+with open("dylan" if PROD else "sample") as f:
     lines = list(map(eval, filter(bool, [g.strip() for g in f.readlines()])))
     pairs = [lines[2*i:2*(i+1)] for i in range(len(lines)//2)]
+
+for i,p in enumerate(pairs):
+    print("====",i,"====")
+    print("Pair",i,"is right:)" if compare(*p) else "is WRONG!!")
 
 print(
     "Part 1:",
