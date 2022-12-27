@@ -1,5 +1,9 @@
 PROD = True
 
+from time import perf_counter
+
+t = perf_counter()
+
 with open("input" if PROD else "sample") as f:
     lines = [g.strip() for g in f.readlines()]
 width = len(lines[0])
@@ -87,8 +91,9 @@ def round():
 
 # uncomment for part 2
 # ================== #
-# counter = 0
-# while round():
-#     counter += 1
+counter = 0
+while round():
+    counter += 1
 
-# print(counter+1)
+print(counter+1)
+print(perf_counter() - t)
